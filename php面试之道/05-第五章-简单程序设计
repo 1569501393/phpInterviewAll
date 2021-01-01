@@ -1,0 +1,28 @@
+# 第五章简单程序设计题考察点
+
+- - [留言板](https://www.kancloud.cn/idcpj/php_interview/610392#_2)
+
+  - - [PDO](https://www.kancloud.cn/idcpj/php_interview/610392#PDO_3)
+
+  - [无限分类](https://www.kancloud.cn/idcpj/php_interview/610392#_12)
+
+## 留言板
+
+### PDO
+
+```
+$pdo =  new PDO($dsn, $username, $password, $attr);
+$sql ='select id, title, content FROM message where user name=:user name
+$stmt= $pdo->prepare($sql);
+$stmt->execute([:user_name=>$user namel);
+$result= $stmt->fetchAll(PDO: FETCH-ASSOC);
+```
+
+## 无限分类
+
+![img](https://box.kancloud.cn/d45cbd639a5b000716b8b73a20bb2029_1728x846.jpg)
+
+方法一 : 根据 pid
+方法二 : 根据 path
+
+上一篇：[安全性](https://www.kancloud.cn/idcpj/php_interview/610391)下一篇：[第六章PHP框架基础知识考察点](https://www.kancloud.cn/idcpj/php_interview/610393)

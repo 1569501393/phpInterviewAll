@@ -1,0 +1,123 @@
+# 数据库的优化
+
+- - [数据库的优化](https://www.kancloud.cn/idcpj/php_interview/610433#_3)
+
+  - [数据表数据类型优化](https://www.kancloud.cn/idcpj/php_interview/610433#_9)
+
+  - - [字段使用什么样的数据类型更合适](https://www.kancloud.cn/idcpj/php_interview/610433#_10)
+
+    - [索引优化](https://www.kancloud.cn/idcpj/php_interview/610433#_17)
+
+    - [SQL语句的优化](https://www.kancloud.cn/idcpj/php_interview/610433#SQL_26)
+
+    - [存储引擎优化](https://www.kancloud.cn/idcpj/php_interview/610433#_41)
+
+    - [数据表结构设计的优化](https://www.kancloud.cn/idcpj/php_interview/610433#_44)
+
+    - - [分区操作](https://www.kancloud.cn/idcpj/php_interview/610433#_45)
+      - [分库分表](https://www.kancloud.cn/idcpj/php_interview/610433#_77)
+
+    - [数据库服务器架构的优化](https://www.kancloud.cn/idcpj/php_interview/610433#_81)
+
+> [msql 优化的详细方法](https://segmentfault.com/a/1190000006158186)
+
+## 数据库的优化
+
+数据库的缓存(memcache 缓存,redis 缓存等)
+分库分表、分区操作
+读写分离
+负载均衡
+
+## 数据表数据类型优化
+
+### 字段使用什么样的数据类型更合适
+
+tinyint (0-255) smallint , bigint
+char,vachar
+enum 特定、固定的分类可以使用enUm存储,效率更快
+IP地址的存储 //用 php 的 `ip2long('192.168.1.38'); //3232235814`
+对字段进行 not null 这样,存储的字段就不会有 null 值 ,只有空值
+
+### 索引优化
+
+索引不是越多越好,在合适的字段上创建合适的索引
+复合索引的前缀原则
+复合索引的前缀原则
+lke查询%的问题(% 在前如:`%name` 则索引失败)
+全表扫描优化
+or条件索引使用情况
+字符串类型索引失效的问题(如字符串类型的字段必须要加引号查询)
+
+### SQL语句的优化
+
+优化查询过程中的数据访问
+优化长难句的查询语句
+优化特定类型的查询语句
+使用 Limit
+返回列不用*
+变复杂为简单
+切分查询(如删大量数据时,可分多次删除)
+分解关联查询
+优化 count() (如对统计数据单独存放在一个字段,而不是进行 count() 统计)
+优化关联查询
+优化子查询
+优化 Group by和 distinct
+优化 limit和 union
+
+### 存储引擎优化
+
+尽量使用 Inno DB存储引擎
+
+### 数据表结构设计的优化
+
+#### 分区操作
+
+通过特定的策略对数据表进行物理拆分
+对用户透明
+partition by
+对新建表进行分区
+
+```
+CREATE TABLE employees (
+    id INT NOT NULL,
+    fname VARCHAR(30),
+    lname VARCHAR(30),
+    hired DATE NOT NULL DEFAULT '1970-01-01',
+    separated DATE NOT NULL DEFAULT '9999-12-31',
+    job_code INT NOT NULL,
+    store_id INT NOT NULL
+)
+PARTITION BY RANGE (store_id) (
+    PARTITION p0 VALUES LESS THAN (6),
+    PARTITION p1 VALUES LESS THAN (11),
+    PARTITION p2 VALUES LESS THAN (16),
+    PARTITION p3 VALUES LESS THAN MAXVALUE
+);
+```
+
+对已有表进行分区
+
+```
+ALTER TABLE user PARTITION BY RANGE (id)
+(   
+PARTITION p_Apr VALUES LESS THAN (2),
+PARTITION p_May VALUES LESS THAN (4), 
+PARTITION p_Dec VALUES LESS THAN MAXVALUE 
+);
+```
+
+#### 分库分表
+
+水平拆分
+垂直拆分
+
+### 数据库服务器架构的优化
+
+- 主从复制
+- 读写分离
+- 双主热备
+- 负载均衡:
+  通过LVS的三种基本模式实现负载均衡
+  My Cat数据库中间件实现负载均衡
+
+上一篇：[第九章高并发和大流量解决方案](https://www.kancloud.cn/idcpj/php_interview/610396)下一篇：[流量优化-防盗链](https://www.kancloud.cn/idcpj/php_interview/610446)

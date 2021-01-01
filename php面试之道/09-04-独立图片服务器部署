@@ -1,0 +1,35 @@
+# 独立图片服务器的部署
+
+- - [独立的必要性](https://www.kancloud.cn/idcpj/php_interview/610448#_2)
+
+  - [采用独立域名](https://www.kancloud.cn/idcpj/php_interview/610448#_7)
+
+  - - [原因](https://www.kancloud.cn/idcpj/php_interview/610448#_9)
+
+  - [独立后的问题](https://www.kancloud.cn/idcpj/php_interview/610448#_13)
+
+  - - [如何进行图片上传和图片同步](https://www.kancloud.cn/idcpj/php_interview/610448#_14)
+
+## 独立的必要性
+
+- 分担Web服务器的I/O负载将耗费资源的图片服务分离出来,提高服务器的性能和稳定性
+- 能够专门对图片服务器进行优化-为图片服务设置有针对性的缓存方案,减少带宽成本,提高访问速度
+- 提高网站的可扩展性-通过增加图片服务器,提高图片吞吐能力
+
+## 采用独立域名
+
+> 并非二级域名
+
+### 原因
+
+- 同一域名下浏览器的并发连接数有限制,突破浏览器连接数的限制
+- 由于 cookie的原因,对缓存不利,大部分 Web cache都只缓存不带 cookie的请求,导致每次的图片请求都不能命中 cache
+
+## 独立后的问题
+
+### 如何进行图片上传和图片同步
+
+NFS共享方式
+利用FTP同步(php 可以操作 ftp)
+
+上一篇：[CDN加速](https://www.kancloud.cn/idcpj/php_interview/610447)下一篇：[动态语言静态](https://www.kancloud.cn/idcpj/php_interview/610443)

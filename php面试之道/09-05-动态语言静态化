@@ -1,0 +1,80 @@
+# 动态语言静态化
+
+- - [什么是动态语言静态化](https://www.kancloud.cn/idcpj/php_interview/610443#_3)
+
+  - [为什么要静态化](https://www.kancloud.cn/idcpj/php_interview/610443#_7)
+
+  - [静态化的实现方式](https://www.kancloud.cn/idcpj/php_interview/610443#_11)
+
+  - - [使用模板引擎](https://www.kancloud.cn/idcpj/php_interview/610443#_12)
+    - [利用ob系列的函数](https://www.kancloud.cn/idcpj/php_interview/610443#ob_23)
+
+## 什么是动态语言静态化
+
+将现有PHP等动态语言的逻辑代码生成为静态HTML文件,用户访问动态脚本重定向到静态HTML文件的过程。
+对实时性要求不高的页面
+
+## 为什么要静态化
+
+动态脚本通常会做逻辑计算和数据查询,访问量越大,服务器压力越大
+访问量大时可能会造成CPU负载过高,数据库服务器压力过大
+
+## 静态化的实现方式
+
+### 使用模板引擎
+
+可以使用 Smarty的缓存机制生成静态HTML缓存文件
+
+```
+$smarty-> cache dir=$RooT."/ cache";/缓存目录
+$smarty-> caching=true;//是否开启缓存
+$smarty-> cache_lifetime="3600";/缓存时间
+$smarty-> display(string template, string cache_id[, string compile_id]]):
+$smarty-> clear_all_cache();//清除所有缓存
+$smarty-> clear_cache(" file.html");/清除指定的缓存
+$smarty-> clear_cache( 'article.htm',$art_id);//清除同一个模板下的指定缓存号的缓存
+```
+
+### 利用ob系列的函数
+
+```
+ob_start():打开输出控制缓冲
+ob_get_contents0:返回输出缓冲区内容
+ob_clean():清空输出缓冲区
+ob_end_flush0:冲刷出(送出)输出缓冲区内容并关闭缓冲
+ob_start():
+//输出到页面的HTML代码
+...
+ob_get_contents();
+ob end flush();
+fopen(); //写入
+```
+
+实现页面静态化,并且当内容改变时,主动缓存新内容,且如果有$_ GET参数时候,带参数的静态化页面
+
+```
+<?php
+$id = $_GET['id'];
+if (empty($id)) {
+    $id = '';
+}
+$cache_name = md5(__FILE__) . '-' . $id . '.html';
+$cache_lifetime = 3600;
+
+if (@filectime(__FILE__) <= @filectime($cache_name) && file_exists($cache_name) && $cache_lifetime+@filectime($cache_name) > time()) {
+    include $cache_name;
+    exit;
+}
+ob_start();
+?>
+
+<b>This is  My script <?php echo $id; ?></b>
+
+<?php
+$content = ob_get_contents();
+ob_end_flush();
+file_put_contents($cache_name, $content);
+?>
+```
+
+上一篇：[独立图片服务器的部署](https://www.kancloud.cn/idcpj/php_interview/610448)下一篇：[动态语言的并发处理](https://www.kancloud.cn/idcpj/php_interview/610449)
